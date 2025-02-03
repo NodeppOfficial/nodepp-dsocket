@@ -10,7 +10,7 @@ namespace nodepp { namespace _hs_ {
     template< class T > bool server( T& cli ) {
         auto data = cli.read(); cli.set_borrow( data ); int c=0;
         
-        while(( c=cli.read_header() )>0 ); /*{ process::next(); }*/
+        while(( c=cli.read_header() )>0 ){ process::next(); }
            if(  c == -1  ){ return 0; }
 
         if( cli.headers["Upgrade"].to_lower_case() == "http-socket" ){
@@ -37,7 +37,7 @@ namespace nodepp { namespace _hs_ {
 
         cli.write_header( "GET", url::path(url), "HTTP/1.0", header );
 
-        while(( c=cli.read_header() )>0 ); /*{ process::next(); }*/ if( c!=0 ){
+        while(( c=cli.read_header() )>0 ) { process::next(); } if( c!=0 ){
             _EERROR(cli.onError,"Could not connect to server");
             cli.close(); return false; 
         }

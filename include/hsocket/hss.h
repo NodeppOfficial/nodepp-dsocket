@@ -9,8 +9,8 @@
 
 /*────────────────────────────────────────────────────────────────────────────*/
 
-#ifndef NODEPP_hsS
-#define NODEPP_hsS
+#ifndef NODEPP_HTTPS_SOCKET
+#define NODEPP_HTTPS_SOCKET
 
 /*────────────────────────────────────────────────────────────────────────────*/
 
@@ -42,24 +42,6 @@ public:
         if( is_closed() ){ return -1; } if( sx==0 ){ return 0; }
         while( hs->read( this, bf, sx )==1 ){ return -2; }
         return hs->read.data==0 ? -2 : hs->read.data;
-    }
-
-public:
-
-    bool _write_( char* bf, const ulong& sx, ulong& sy ) const noexcept {
-        if( sx==0 || is_closed() ){ return 1; } while( sy < sx ) {
-            int c = __write( bf+sy, sx-sy );
-            if( c <= 0 && c != -2 )          { return 0; }
-            if( c >  0 ){ sy += c; continue; } return 1;
-        }   return 0;
-    }
-
-    bool _read_( char* bf, const ulong& sx, ulong& sy ) const noexcept {
-        if( sx==0 || is_closed() ){ return 1; } while( sy < sx ) {
-            int c = __read( bf+sy, sx-sy );
-            if( c <= 0 && c != -2 )          { return 0; }
-            if( c >  0 ){ sy += c; continue; } return 1;
-        }   return 0;
     }
 
 };}
