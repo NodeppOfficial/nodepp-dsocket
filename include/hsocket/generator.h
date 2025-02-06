@@ -8,11 +8,9 @@ namespace nodepp { namespace _hs_ {
     /*─······································································─*/
 
     template< class T > bool server( T& cli ) {
-        auto data = cli.read(); cli.set_borrow( data ); int c=0;
+        auto data = cli.read(); cli.set_borrow( data );
         
-        while(( c=cli.read_header() )>0 ){ process::next(); }
-           if(  c == -1  ){ return 0; }
-
+        if( cli.read_header()!=0 ){ return 0; }
         if( cli.headers["Upgrade"].to_lower_case() == "http-socket" ){
 
             cli.write_header( 101, header_t({
@@ -29,7 +27,7 @@ namespace nodepp { namespace _hs_ {
 
     template< class T > bool client( T& cli, string_t url ) {
 
-        int c=0; header_t header ({
+        header_t header ({
             { "Transfer-Encoding", "chunked" },
             { "Upgrade", "http-socket" },
             { "Connection", "upgrade" }
@@ -37,7 +35,7 @@ namespace nodepp { namespace _hs_ {
 
         cli.write_header( "GET", url::path(url), "HTTP/1.0", header );
 
-        while(( c=cli.read_header() )>0 ) { process::next(); } if( c!=0 ){
+        if( cli.read_header()!=0 ){
             _EERROR(cli.onError,"Could not connect to server");
             cli.close(); return false; 
         }
